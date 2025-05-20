@@ -26,7 +26,7 @@ from scipy.interpolate import interp1d as ip
 #Initial experiment
 Total_time = 36000 #[s] Total simulation time
 X_iv_t_control = np.array([0,        0.1*Total_time, 0.2*Total_time, 0.5*Total_time, 0.6*Total_time, 0.7*Total_time, 0.8*Total_time, Total_time]) #[s] setting time point
-X_fs    =        np.array([1.0,      0.9,            0.3,            0.2,            0.2,            0.5,            1.0,           1         ]) #[-] fuel rack factor, 1 is maximum
+X_fs    =        np.array([1.0,      1.0,            1.0,            1.0,            1.0,            1.0,            1.0,           1.0         ]) #[-] fuel rack factor, 1 is maximum
 Y_iv_t_control = np.array([0,        0.1*Total_time, 0.2*Total_time, 0.5*Total_time, 0.6*Total_time, 0.7*Total_time, Total_time]) #[s] setting time point
 Y_df    =        np.array([1,        1,              1,              1,              1,              1,              1         ]) #[-] disturbance factor
 
@@ -195,7 +195,7 @@ Cw_model = cwBerekening(Ct_model, Cf_model, k)
 Cw_schip = Cw_model
 
 def cBerekening(cw, cf, k, v_s):
-    cw_func = ip(V_metingen, Cw_model, bounds_error=False, fill_value='extrapolate')
+    cw_func = ip(V_metingen, Cw_model, kind='linear', fill_value='extrapolate')
     c = cw_func(v_s) + cf*(1 + k)
     return c
 
