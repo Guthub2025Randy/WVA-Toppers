@@ -138,6 +138,10 @@ def reynoldsgetalBerekening(V, L, vis):
     Re = (V*L)/vis
     return Re
 
+def calcFroudeNumber(v_, L_):
+    Fn_ = v_ / math.sqrt(9.81*L_)
+    return Fn_
+
 def cfBerekening(Re):
     Cf = 0.075/((np.log10(Re) - 2)**2)
     return Cf
@@ -152,25 +156,43 @@ def cwBerekening(Ct, Cf, k):
 
 # reynoldsmodel -> Cfmodel -> k -> Ctmodel -> Cwmodel -> Cwschip -> reynoldsschip -> Cfschip -> Ctschip -> Rtschip
 alpha = 50
-V_metingen = np.array([0.0016, 0.0973, 0.1968, 0.2957, 0.3948, 0.4941, 0.5934, 0.6925, 0.7916, 0.8904, 0.9896, 1.1880])
-R_tot_model = np.array([0.8402, 0.8984, 1.0203, 1.1544, 1.3701, 1.6332, 1.9424, 2.3537, 2.1885, 3.4843, 4.8205, 9.5683])
+V_metingen = np.array([0.0973, 0.1968, 0.2957, 0.3948, 0.4941, 0.5934, 0.6925, 0.7916, 0.8904, 0.9896, 1.1880]) + 0.0016
+R_tot_model = np.array([0.8984, 1.0203, 1.1544, 1.3701, 1.6332, 1.9424, 2.3537, 2.1885, 3.4843, 4.8205, 9.5683]) + 0.8402
 L_schip = 117.7
 L_model = L_schip/alpha
 S_schip = 2661.0
 S_model = S_schip/(alpha**2)
-vis_sleeptank = 1.0621*10**(-6)
-vis_schip = 1.28324*10**(-6)
+vis_sleeptank = 1.0621*(10**(-6))
+vis_schip = 1.28324*(10**(-6))
 rho_model = 998.6536
 rho_schip = 1026.6376
 
 Re_model = reynoldsgetalBerekening(V_metingen, L_model, vis_sleeptank)
 
 Cf_model = cfBerekening(Re_model)
-k = 738
 Ct_model = ctBerekening(R_tot_model, rho_model, V_metingen, S_model)
+
+Fn_model = calcFroudeNumber(V_metingen, L_schip/alpha)
+
+Ctm_vs_Cfm = []
+Fnm_vs_Cfm = []
+for i, ctm in enumerate(Ct_model):
+    if Fn_model[i] > 0.08 and Fn_model[i] < 0.25:
+        Ctm_vs_Cfm.append( Ct_model[i]/Cf_model[i] ) 
+        Fnm_vs_Cfm.append( (Fn_model[i]**4)/Cf_model[i] )
+plt.title("Prohaska Plot")
+plt.scatter(Ctm_vs_Cfm, Fnm_vs_Cfm)
+plt.xlabel("$Fn^4/C_f$")
+plt.ylabel("$C_t/C_f$")
+plt.grid(True)
+plt.show()
+interpol_formfactor = ip(Ctm_vs_Cfm, Fnm_vs_Cfm, kind='linear', fill_value='extrapolate')
+form_factor = interpol_formfactor(0.0) + 1 # Volgens methode dat de functie de ordinaat bij 1+k intersect.
+print("\nForm Factor k of Model and Prototype = \n", form_factor)
+
+k = form_factor
 Cw_model = cwBerekening(Ct_model, Cf_model, k)
 Cw_schip = Cw_model
-
 
 def cBerekening(cw, cf, k, v_s):
     cw_func = ip(V_metingen, cw, bounds_error=False, fill_value=0)
