@@ -10,6 +10,7 @@ Created on Thu May 15 16:33:45 2025
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
 
 # ALL IN SI UNITS (unless specified differently!)
 
@@ -36,12 +37,22 @@ v_ship_max = 10.5*(1852/3600) # m/s
 P_ship = 1200*10**3 #kW
 R_ship_max = (0.7*P_ship)/v_ship_max # Assumption
 
+print( v_ship_max / math.sqrt(GRAVACC*Lwl) )
+
+# Initialization
+v_0 = (-0.0016)
+R_0 = 0.8402
+v_model_initial = [0.0973, 0.1968, 0.2957, 0.3948, 0.4941, 0.5934, 0.6925, 0.8904, 0.9896, 1.1880] # [m/s]
+R_total_model_initial = [0.8984, 1.0203, 1.1544, 1.3701, 1.6332, 1.9424, 2.3537, 3.4843, 4.8205, 9.5683] # [N]
 
 # Meetdata Sleeptankproef Labrax Model
-run_no = [500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511] # [-]
-v_model = [0.0016, 0.0973, 0.1968, 0.2957, 0.3948, 0.4941, 0.5934, 0.6925, 0.7916, 0.8904, 0.9896, 1.1880] # [m/s]
-R_total_model = [0.8402, 0.8984, 1.0203, 1.1544, 1.3701, 1.6332, 1.9424, 2.3537, 2.1885, 3.4843, 4.8205, 9.5683] # [N]
-
+run_no = [501, 502, 503, 504, 505, 506, 507, 509, 510, 511] # [-]
+v_model, R_total_model = [], []
+for i, v in enumerate(v_model_initial):
+    v_model.append( v-v_0 )
+    R_total_model.append( R_total_model_initial[i]-R_0 )
+print("\nVelocity measurement Model (in [m/s]) = \n",v_model)
+print("\nResistance measurement Model (in [N]) = \n",R_total_model)
 
 # Functions
 def calcFroudeNumber(v_, L_):
@@ -53,7 +64,7 @@ def calcReynoldsNumber(v_, L_, viscosity_):
     return Re_
     
 def calcCoeffFriction(Re_):
-    C_f_ = 0.075 / (math.log10(Re_)-2)**2
+    C_f_ = 0.075 / ((math.log10(Re_)-2)**2)
     return C_f_
 
 def calcCoeffTotal(R_, rho_, v_, S_wet_):
@@ -68,8 +79,8 @@ def calcCoeffWave(C_t_, C_f_, k_):
     C_w_ = C_t_ - (1+k_)*C_f_
     return C_w_
 
-def scaleResistanceModelToShip(C_w_model_, C_f_model_, k_model, rho_, v_ship_, alpha_, S_wet_ship):
-    R_ship_ = (C_w_model_ + C_f_model_*(1+k_model)) * 0.5*rho_*(v_ship_**2)*(S_wet_ship)
+def scaleResistanceModelToShip(C_w_model_, C_f_model_, k, rho_, v_ship_, alpha_, S_wet_ship):
+    R_ship_ = (C_w_model_ + C_f_model_*(1+k)) * 0.5*rho_*(v_ship_**2)*(S_wet_ship)
     return R_ship_
 
 
@@ -82,12 +93,9 @@ B_model = B/alpha
 Taft_model = Taft/alpha
 Tfwd_model = Tfwd/alpha
 S_wet_model = S_wet_ship/(alpha**2)
-form_factor = calcFormFactor(C_b, Lwl, B, (Taft+Tfwd)/2)
-form_factor_model = calcFormFactor(C_b, Lwl_model, B_model, (Taft_model+Tfwd_model)/2) # Block coefficient of model remains equal with that of prototype
 print("\nScaled Velocity from Model to Ship (in [m/s]) = \n", v_ship)
 print("\nScaled Length between Waterline from Ship to Model (in [m]) = \n", Lwl_model)
 print("\nScaled Wet Surface Area from Ship to Model (in [m^2]) = \n", S_wet_model)
-print("\nForm Factor k of Ship == Scaled Form Factor k of Model = \n", form_factor)
 
 
 # Model Data
@@ -109,7 +117,25 @@ print("\nThe Froude Number of the Model = \n", Fn_model)
 print("\nThe Reynold Number of the Model = \n", Re_model)
 print("\nThe Coefficient of Frictional Resistance of the Model = \n", Cf_model)
 print("\nThe Coefficient of Total Resistance of the Model = \n", Ct_model)
-    
+
+
+# Calculate Form Factor
+Ctm_vs_Cfm = []
+Fnm_vs_Cfm = []
+for i, ctm in enumerate(Ct_model):
+    if Fn_model[i] > 0.1 and Fn_model[i] < 0.2:
+        Ctm_vs_Cfm.append( Ct_model[i]/Cf_model[i] )
+        Fnm_vs_Cfm.append( (Fn_model[i]**4)/Cf_model[i] )
+plt.title("Prohaska Plot")
+plt.scatter(Fnm_vs_Cfm, Ctm_vs_Cfm)
+plt.xlabel("$Fn^4/C_f$")
+plt.ylabel("$C_t/C_f$")
+plt.grid(True)
+plt.show()
+interpol_formfactor = interp1d(Fnm_vs_Cfm, Ctm_vs_Cfm, kind='linear', fill_value='extrapolate')
+form_factor = interpol_formfactor(0.0) - 1 # Volgens methode dat de functie de ordinaat bij 1+k intersect.
+print("\nForm Factor k of Model and Prototype = \n", form_factor)
+
     
 # Common Data (Model & Prototype)
 Cw = []
