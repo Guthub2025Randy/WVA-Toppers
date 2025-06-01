@@ -245,7 +245,7 @@ plt.xlabel('Time [s]')
 plt.ylabel('Fuel rack [%]')
 plt.grid(True)
 plt.tight_layout()
-plt.savefig('figures/start_fig01.jpg')
+
 
 
 plt.figure(2, figsize=(16,9))
@@ -256,7 +256,7 @@ plt.xlabel('Time [s]')
 plt.ylabel('Ship speed [m/s], Engine / Propeller speed [rps]')
 plt.grid(True)
 plt.title('figuur 2', loc='right', pad=20)
-plt.savefig('figures/start_fig02.jpg')
+
 
 
 plt.figure(3, figsize=(16,9))
@@ -267,7 +267,7 @@ plt.xlabel('Ship Speed v_s [knots]')
 plt.ylabel('Ship Resistance R [kN]')
 plt.grid(True)
 plt.title('figuur 3', loc='right', pad=20)
-plt.savefig('figures/start_fig03.jpg')
+
 
 
 plt.figure(4, figsize=(16,9))
@@ -278,7 +278,7 @@ plt.xlabel('Ship Speed v_s [knots]')
 plt.ylabel('Effective Towing Power $P_E$ [MW]')
 plt.grid(True)
 plt.title('figuur 4', loc='right', pad=20)
-plt.savefig('figures/start_fig04.jpg')
+
 
 
 plt.figure(5, figsize=(16,9))
@@ -289,7 +289,7 @@ plt.xlabel('Propeller Speed $n_p$ [rpm]')
 plt.ylabel('Propeller Torque $M_p$ [kNm]')
 plt.grid(True)
 plt.title('figuur 5', loc='right', pad=20)
-plt.savefig('figures/start_fig05.jpg')
+
 
 
 plt.figure(6, figsize=(16,9))
@@ -300,7 +300,7 @@ plt.xlabel('Propeller Speed $n_p$ [rpm]')
 plt.ylabel('Propeller power $P_p$ [kW]')
 plt.grid(True)
 plt.title('figuur 6', loc='right', pad=20)
-plt.savefig('figures/start_fig06.jpg')
+
 
 
 plt.figure(7, figsize=(16,9))
@@ -311,7 +311,7 @@ plt.xlabel('Engine Speed $n_e$ [rpm]')
 plt.ylabel('Engine Torque $M_B$ [Nm]')
 plt.grid(True)
 plt.title('figuur 7', loc='right', pad=20)
-plt.savefig('figures/start_fig07.jpg')
+
 
 
 plt.figure(8, figsize=(16,9))
@@ -322,7 +322,7 @@ plt.xlabel('Engine Speed $n_e$ [rpm]')
 plt.ylabel('Engine power $P_B$ [kW]')
 plt.grid(True)
 plt.title('figuur 8', loc='right', pad=20)
-plt.savefig('figures/start_fig08.jpg')
+
 
 
 plt.figure(9, figsize=(16,9))
@@ -334,7 +334,7 @@ plt.xlabel('Time t [s]')
 plt.ylabel('Thrust [N]')
 plt.title('figuur 9', loc='right', pad=20)
 plt.grid(True)
-plt.savefig('figures/start_fig09.jpg')
+
 
 
 plt.figure(10, figsize=(16,9))
@@ -346,7 +346,7 @@ plt.xlabel('Time t [s]')
 plt.ylabel('Torque [Nm]')
 plt.grid(True)
 plt.title('figuur 10', loc='right', pad=20)
-plt.savefig('figures/start_fig10.jpg')
+
 
 
 plt.figure(11, figsize=(16,9))
@@ -357,7 +357,7 @@ plt.xlabel('Time t [s]')
 plt.ylabel('J, $K_T$ and $K_Q$ [-]')
 plt.grid(True)
 plt.title('figuur 11', loc='right', pad=20)
-plt.savefig('figures/start_fig11.jpg')
+
 
 
 plt.figure(12, figsize=(16,9))
@@ -370,7 +370,7 @@ plt.xlabel('Time t [s]')
 plt.ylabel(r'$\eta_{hull}, \eta_O,\eta_{TRM} [-]$')
 plt.grid(True)
 plt.title('figuur 12', loc='right', pad=20)
-plt.savefig('figures/start_fig12.jpg')
+
 
 plt.figure(13, figsize=(16,9))
 plt.plot( P_P_out / 1000, eta_O_out, color='blue', label=r'$\eta_O$')
@@ -382,7 +382,7 @@ plt.xlabel(r'$P_p$ and $P_B$ [kW]')
 plt.ylabel(r'$\eta_O, \eta_e [-]$')
 plt.grid(True)
 plt.title('figuur 13', loc='right', pad=20)
-plt.savefig('figures/start_fig13.jpg')
+
 
 plt.show()
 print('End simulation run')
