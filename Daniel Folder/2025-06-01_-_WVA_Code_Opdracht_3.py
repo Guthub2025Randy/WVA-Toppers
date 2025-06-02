@@ -25,7 +25,7 @@ n_rpm = n_rps * 60
 
 I = (np.array([1160, 1180, 1130, 1080, 1030, 990, 965, 930, 890, 845, 810, 800]) - I0) * 10**-3
 
-def regressionSecondDegreePolynomial(x_array_, a_, b_, c_):
+def benadering(x_array_, a_, b_, c_):
     y_regression = a_*x_array_**2 + b_*x_array_ + c_
     return y_regression
 
@@ -47,5 +47,5 @@ a_Kq, b_Kq, c_Kq = np.polyfit(J_proto, Kq_proto, 2)
 print("Coefficients for second degree polynomial regression of J-Kt = ",a_Kt, b_Kt, c_Kt)
 print("Coefficients for second degree polynomial regression of J-Kq = ",a_Kq, b_Kq, c_Kq)
 
-Kt_proto_regression = regressionSecondDegreePolynomial(J_proto, a_Kt, b_Kt, c_Kt)
-Kq_proto_regression = regressionSecondDegreePolynomial(J_proto, a_Kq, b_Kq, c_Kq)
+Kt_proto_benadering = benadering(J_proto, a_Kt, b_Kt, c_Kt)
+Kq_proto_benadering = benadering(J_proto, a_Kq, b_Kq, c_Kq)
