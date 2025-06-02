@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 g = 9.81
 rho = 1024
-D_schroef = (3.4 / 50)
+D_schroef = 3.4
 t = 0.15
 
 Q0 = -16.2201
@@ -49,30 +49,3 @@ print("Coefficients for second degree polynomial regression of J-Kq = ",a_Kq, b_
 
 Kt_proto_regression = regressionSecondDegreePolynomial(J_proto, a_Kt, b_Kt, c_Kt)
 Kq_proto_regression = regressionSecondDegreePolynomial(J_proto, a_Kq, b_Kq, c_Kq)
-
-# Plot Data
-plt.title("$K_T$ vs. J")
-plt.scatter(J_proto, Kt_proto)
-plt.plot(J_proto, Kt_proto_regression, color='orange')
-plt.xlabel("$J$ Prototype [-]")
-plt.ylabel("$K_T$ Prototype [-]")
-plt.grid(True)
-plt.show()
-
-plt.title("$K_Q$ vs. J")
-plt.scatter(J_proto, Kq_proto)
-plt.plot(J_proto, Kq_proto_regression, color='magenta')
-plt.xlabel("$J$ Prototype [-]")
-plt.ylabel("$K_Q$ Prototype [-]")
-plt.grid(True)
-plt.show()
-
-eta_percent_proto = []
-for e in n_0_proto:
-    eta_percent_proto.append(e*100)
-plt.title("$\eta$ vs. J")
-plt.scatter(J_proto, eta_percent_proto, color='green')
-plt.xlabel("$J$ Prototype [-]")
-plt.ylabel("$eta$ Prototype [%]")
-plt.grid(True)
-plt.show()
