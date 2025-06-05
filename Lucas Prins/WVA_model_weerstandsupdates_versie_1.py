@@ -26,10 +26,14 @@ from scipy.interpolate import interp1d as ip
 #Initial experiment
 Total_time = 36000 #[s] Total simulation time
 X_iv_t_control = np.array([0,        0.1*Total_time, 0.2*Total_time, 0.5*Total_time, 0.6*Total_time, 0.7*Total_time, 0.8*Total_time, Total_time]) #[s] setting time point
-X_fs    =        np.array([1.0,      0.9,            0.3,            0.2,            0.2,            0.5,            1.0,           1         ]) #[-] fuel rack factor, 1 is maximum
+X_fs_unlim    =        np.array([1.0,      0.9,            0.3,            0.2,            0.2,            0.5,            1.0,           1         ]) #[-] fuel rack factor, 1 is maximum
 Y_iv_t_control = np.array([0,        0.1*Total_time, 0.2*Total_time, 0.5*Total_time, 0.6*Total_time, 0.7*Total_time, Total_time]) #[s] setting time point
 Y_df    =        np.array([1,        1,              1,              1,              1,              1,              1         ]) #[-] disturbance factor
 
+X_fs = np.zeros(len(X_fs_unlim))
+
+for i in range(0, len(X_fs_unlim)):
+    X_fs[i] = max(0.2, min(1, X_fs_unlim[i]))
 
 #Time step setting
 """ 
