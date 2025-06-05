@@ -71,12 +71,12 @@ print('ship data loaded')
 
 #Propeller Data
 D_p = 3.2 #[m] propeller diameter
-K_Ta = -0.18840073547229222 #[-] K_T factor a
-K_Tb = -0.009118634901140194 #[-] K_T factor b
-K_Tc = 0.00044839911689497464#[-] K_T factor c
-K_Qa = -0.023914737218615874  #[-] K_Q factor a
-K_Qb = -0.00023008753050457744 #[-] K_Q factor b
-K_Qc = 4.159748520366274e-05
+K_Ta = -0.09970875640677149 #[-] K_T factor a
+K_Tb = -0.17206740568017384 #[-] K_T factor b
+K_Tc = 0.36074407966305094 #[-] K_T factor c
+K_Qa = -0.016753575062606815  #[-] K_Q factor a
+K_Qb = -0.006573389455185741 #[-] K_Q factor b
+K_Qc = 0.048660873932385294
 eta_R = 1.01 #[-] relative rotative efficiency
 print('propellor data loaded')
 
