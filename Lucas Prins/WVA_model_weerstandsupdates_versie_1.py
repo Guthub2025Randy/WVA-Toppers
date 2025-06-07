@@ -80,10 +80,10 @@ K_Qc = 0.048660873932385294
 eta_R = 1.01 #[-] relative rotative efficiency
 print('propellor data loaded')
 
-#Engine Data
-#m_fuelnom = 1.314762 #[g] nominal fuel injection
-#i = 6 #[-] number of cylinders
-#k_es = 2 #[-] k-factor for engines based on nr.of strokes per cycle
+Engine Data
+m_fuelnom = 1.314762 #[g] nominal fuel injection
+i = 6 #[-] number of cylinders
+k_es = 2 #[-] k-factor for engines based on nr.of strokes per cycle
 
 # Electrical motor data
 # Electro Adda W40 LX6
