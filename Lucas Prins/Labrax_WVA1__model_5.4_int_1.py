@@ -76,6 +76,8 @@ print('ICE data loaded')
 P_aux = 0
 eta_EPD = 0.95				# rendement Electric Power Distribution from P.de Vos
 k_gensets = 4				# 
+Q_loss_comb = 0
+eta_td = 0.52
 print('PowerPlant data loaded')
 
 # Electrical motor data
@@ -219,8 +221,8 @@ def Prop_torque(v_s, n_p):
 def ICE(P_ICE, n_eng):
     M_B = P_ICE / (2 * pi * n_eng)
     fire_freq = n_eng* i /k_es
-    Q_loss_cooling = 795.33 + (3181.333 * (P_act / P_nom))
-    W_loss_mech = 296.29 + (691.38 * (n_e_act / n_e_nom))
+    Q_loss_cooling = 795.33 + (3181.333 * (eta_ICE))
+    W_loss_mech = 296.29 + (691.38 * (n_eng / n_eng_nominal))
     W_e = (M_B * fire_freq) - W_loss_mech
     Q_f = (W_e / eta_ICE) - Q_loss_cooling
     m_f = Q_f / LHV #dFCdt    
