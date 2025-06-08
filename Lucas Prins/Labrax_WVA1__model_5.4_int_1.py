@@ -219,8 +219,10 @@ def Prop_torque(v_s, n_p):
 def ICE(P_ICE, n_eng):
     M_B = P_ICE / (2 * pi * n_eng)
     fire_freq = n_eng* i /k_es
-    W_e = M_B * fire_freq
-    Q_f = W_e / eta_ICE
+    Q_loss_cooling = 795.33 + (3181.333 * (P_act / P_nom))
+    W_loss_mech = 296.29 + (691.38 * (n_e_act / n_e_nom))
+    W_e = (M_B * fire_freq) - W_loss_mech
+    Q_f = (W_e / eta_ICE) - Q_loss_cooling
     m_f = Q_f / LHV #dFCdt    
     return m_f
     
