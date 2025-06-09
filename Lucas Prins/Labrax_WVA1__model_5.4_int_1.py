@@ -35,7 +35,9 @@ Y_df    =        np.array([  1,               1,                    1,          
 X_fs = np.zeros(len(X_fs_unlim))
 
 for i in range(0, len(X_fs_unlim)):
-    X_fs[i] = max(0.2, min(1, X_fs_unlim[i]))
+    X_fs[i] = min(1, X_fs_unlim[i])
+    if X_fs[i] < 0.2:
+        X_fs[i] = 0
 
 #Fuel Properties
 LHV = 42700 #[kJ/kg]  Lower Heating Value
