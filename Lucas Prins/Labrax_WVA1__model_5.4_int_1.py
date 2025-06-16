@@ -226,7 +226,7 @@ def ICE(P_ICE, n_eng):
     Q_loss_cooling = 795.33 + (3181.333 * (eta_ICE))
     W_loss_mech = 296.29 + (691.38 * (n_eng / n_eng_nominal))
     W_e = (M_B * fire_freq) - W_loss_mech
-    Q_f = (W_e / eta_td) - Q_loss_cooling
+    Q_f = (W_e / eta_td) + Q_loss_cooling
     m_f = Q_f / LHV #dFCdt    
     return m_f
     
