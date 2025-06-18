@@ -233,7 +233,7 @@ def ICE(P_ICE, n_eng):
     Q_loss_cooling = 795.33 + (3181.333 * eta_ICE)
     eta_mech = n_eng / n_eng_nominal
     W_loss_mech = 296.29 + (691.38 * eta_mech)
-    W_e = (M_B * fire_freq) - W_loss_mech
+    W_e = (M_B * fire_freq) + W_loss_mech
     Q_f = (W_e / eta_td) + Q_loss_cooling
     m_f = Q_f / LHV #dFCdt    
     return m_f, eta_ICE, eta_mech
@@ -252,7 +252,7 @@ def PowerPlant(P_EM):
     m_f = ICE(P_ICE, n_eng_nominal)[0]
     m_flux = m_f*n_eng_nominal*i/k_es
     out_m_flux = m_flux * k_gensets
-    return (out_m_flux), n_e
+    return (out_m_flux)
 
 
 # GenSets
@@ -282,15 +282,15 @@ def main_simulation(t,y):
     dsdt = ShipTransDynamics(y[0], y[1], Y_df_set)[1]	#Ship Translational Dynamics
     n_EM = y[1]*i_gb
     P_EM, M_EM = Electric_Motors(X_fs_set, n_EM)
-    dFCdt, n_e=PowerPlant(P_EM)
+    dFCdt=PowerPlant(P_EM)
     M_P = Prop_torque(y[0], y[1])[2]
     dn_pdt = SRD(M_EM, M_P)[0]
-    return[dv_sdt, dn_pdt, dsdt, dFCdt, n_e]
+    return[dv_sdt, dn_pdt, dsdt, dFCdt]
     
     
 
 #ODE solver
-sol = solve_ivp(main_simulation, [0, Total_time], [v_s0, n_p0, s0, FC0, n_e0], method='BDF')
+sol = solve_ivp(main_simulation, [0, Total_time], [v_s0, n_p0, s0, FC0], method='BDF')
 
 #Simulation output
 v_s, n_p, s, FC = sol.y
@@ -326,7 +326,7 @@ width = 0.8 #Plot line width setting
 plt.figure(figsize=(9,6))
 plt.subplot(4, 1, 1)
 plt.xlim(0,Total_time)
-plt.ylim(0,6)
+plt.ylim(0,15)
 plt.plot(sol.t, v_s, linewidth=width)
 plt.title('Ship Propulsion Output')
 plt.xlabel('Time [s]')
