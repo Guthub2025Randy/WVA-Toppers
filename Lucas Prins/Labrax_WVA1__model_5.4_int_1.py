@@ -72,6 +72,7 @@ k_es = 2 					#[-] k-factor for engines based on nr.of strokes per cycle
 eta_gen = 0.97				# Generator set efficiency from P. de Vos
 #eta_ICE = 0.38				# model P. de Vos
 n_eng_nominal = 1800/60     # model P. de Vos
+eta_comb = 1
 print('ICE data loaded') 
 
 #PowerPlant Data
@@ -229,14 +230,17 @@ def Prop_torque(v_s, n_p):
 def ICE(P_ICE, n_eng):
     M_B = P_ICE / (2 * pi * n_eng)
     fire_freq = n_eng* i /k_es
-    eta_ICE = P_ICE / P_ICE_nominal
-    Q_loss_cooling = 795.33 + (3181.333 * eta_ICE)
-    eta_mech = n_eng / n_eng_nominal
-    W_loss_mech = 296.29 + (691.38 * eta_mech)
-    W_e = (M_B * fire_freq) + W_loss_mech
-    Q_f = (W_e / eta_td) + Q_loss_cooling
+    Q_loss_cooling = 795.33 + (3181.333 * (P_ICE / P_ICE_nominal))
+    W_loss_mech = 296.29 + (691.38 * (n_eng / n_eng_nominal))
+    W_e_p = (M_B * fire_freq)
+    W_e = W_e_p + W_loss_mech
+    eta_mech = W_e_p/W_e
+    Q_f_p = (W_e / eta_td)
+    Q_f = Q_f_p + Q_loss_cooling
+    eta_ICE = Q_f_p/Q_f
     m_f = Q_f / LHV #dFCdt    
-    return m_f, eta_ICE, eta_mech
+    eta_tot = eta_mech*eta_ICE*eta_comb*(W_e/Q_f)
+    return m_f, eta_ICE, eta_mech, eta_tot
     
 #Electric Motor
 def Electric_Motors(X_fs_set, n_EM):
@@ -249,6 +253,7 @@ def Electric_Motors(X_fs_set, n_EM):
 def PowerPlant(P_EM):
     P_elec_gen =  (P_EM + P_aux)/eta_EPD 		# ElectricPowerDistributionSystem
     P_ICE = ((P_elec_gen /eta_gen) / k_gensets)	# 4GenSets
+    
     m_f = ICE(P_ICE, n_eng_nominal)[0]
     m_flux = m_f*n_eng_nominal*i/k_es
     out_m_flux = m_flux * k_gensets
@@ -313,7 +318,7 @@ v_a = calc_AdvanceRatio(v_s, n_p)[0]
 P_T = F_prop * v_a
 Q = Prop_torque(v_s, n_p)[1]
 P_O = 2 * pi * Q * n_p
-Q_f, eta_ICE_plot, eta_mech_plot = ICE(P_B, n_eng_nominal)
+Q_f, eta_ICE_plot, eta_mech_plot, eta_tot_plot = ICE(P_B, n_eng_nominal)
 eta_hull = (1 - w) /(1 - P_T)
 eta_O = P_T / P_O
 eta_EM = eta_EM * np.ones( len(sol.t))
@@ -357,3 +362,5 @@ plt.show()
 
 plt.plot(P_B, eta_ICE_plot)
 plt.plot(P_B, eta_mech_plot)
+plt.plot(P_B, [eta_td]*len(P_B))
+plt.plot(P_B, [eta_comb]*len(P_B))
