@@ -31,16 +31,9 @@ import math
 #Initial experiment
 Total_time = 36000 #[s] Total simulation time
 X_iv_t_control = np.array([  0,  0.1*Total_time,  0.1*Total_time + 60,  0.2*Total_time, 0.2*Total_time + 60, 0.5*Total_time, 0.6*Total_time, 0.7*Total_time, 0.7*Total_time + 60, 0.8*Total_time, 0.8*Total_time + 60, Total_time]) #[s] setting time point
-X_fs_unlim    =        np.array([1.0,            1,                     0.9,             0.9,                 0.2,            0.2,            0.2,            0.2,                 0.5,            0.5,                   1,           1]) #[-] fuel rack factor, 1 is maximum
-Y_iv_t_control = np.array([  0,  0.1*Total_time,  0.1*Total_time + 60,  0.2*Total_time, 0.2*Total_time + 60, 0.5*Total_time, 0.6*Total_time, 0.7*Total_time, 0.7*Total_time + 60, 0.8*Total_time, 0.8*Total_time + 60, Total_time]) #[s] setting time point
-Y_df    =        np.array([  1,               1,                    1,               1,                   1,              1,              1,              1,                   1,              1,                   1,          1]) #[-] disturbance factor
-
-X_fs = np.zeros(len(X_fs_unlim))
-
-for i in range(0, len(X_fs_unlim)):
-    X_fs[i] = min(1, X_fs_unlim[i])
-    if X_fs[i] < 0.2:
-        X_fs[i] = 0
+X_fs   =        np.array([1,            1,                     1,             1,                 1,            1,            1,            1,                 1,            1,                   1,           1]) #[-] fuel rack factor, 1 is maximum
+Y_iv_t_control = np.array([  0,  0.1*Total_time, 36000/5000,  0.1*Total_time + 60,  0.2*Total_time, 0.2*Total_time + 60, 0.5*Total_time, 0.6*Total_time, 0.7*Total_time, 0.7*Total_time + 60, 0.8*Total_time, 0.8*Total_time + 60, Total_time]) #[s] setting time point
+Y_df    =        np.array([  1,               1, 1.5,                    1.5,               1.5,                   1.5,              1.5,              1.5,              1.5,                   1.5,              1.5,                   1.5,          1.5]) #[-] disturbance factor
 
 #Fuel Properties
 LHV = 42700 #[kJ/kg]  Lower Heating Value
@@ -121,7 +114,17 @@ MP0 = M_B0 * i_gb * eta_TRM
 #Sub function
 #Look-up fuelrack
 def calc_X_fs_set(t, X_iv_t, Xfs):
-    X_fs_set = np.interp(t, X_iv_t, Xfs)
+    X_fs_set_unlim = np.interp(t, X_iv_t, Xfs)
+    if type(X_fs_set_unlim) == np.float64:
+        X_fs_set = min(1, float(X_fs_set_unlim))
+        if X_fs_set < 0.2:
+            X_fs_set = 0
+    else:
+        X_fs_set = np.zeros(len(X_fs_set_unlim))
+        for i in range(0, len(X_fs_set_unlim)):
+            X_fs_set[i] = min(1, float(X_fs_set_unlim[i]))
+            if X_fs_set[i] < 0.2:
+                X_fs_set[i] = 0
     return X_fs_set
 
 #Look-up disturbance
