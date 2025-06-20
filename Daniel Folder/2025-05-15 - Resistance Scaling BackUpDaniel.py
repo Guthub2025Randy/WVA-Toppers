@@ -72,7 +72,7 @@ def calcCoeffWave(C_t_, C_f_, k_):
     return C_w_
 
 def calcCoeffTotal(R_, rho_, v_, S_wet_):
-    C_t_ = R_ / (0.5*S_wet_*rho_*v_**2)
+    C_t_ = R_ / (0.5*S_wet_*rho_*(v_**2))
     return C_t_
     
 # Calculation
@@ -124,11 +124,13 @@ R_total_ship = []
 for i in range(0,len(run_no)):
     R_t_p = Ct_ship[i] * 0.5 * RHO_SEAWATER_12C * v_ship[i]**2 * S_wet_ship
     R_total_ship.append(R_t_p)
+cfffs = np.polyfit(v_ship, R_total_ship, 2)
+print(cfffs)
 
 plt.title("Weerstandskromme van de Labrax")
-plt.scatter(v_ship, np.array(R_total_ship)/1000, c='orange', marker='o')
-plt.plot(v_ship, np.array(R_total_ship)/1000, label="Weerstandskromme uit sleeptankproef-meetdata")
-plt.xlabel("geschaalde scheepssnelheid $v_s$ (in $[m/s]$)")
+plt.scatter(np.array(v_ship) * 3.6 / 1.852, np.array(R_total_ship)/1000, c='orange', marker='o')
+plt.plot(np.array(v_ship) * 3.6 / 1.852, np.array(R_total_ship)/1000, label="Weerstandskromme uit sleeptankproef-meetdata")
+plt.xlabel("geschaalde scheepssnelheid $v_s$ (in $[kts]$)")
 plt.ylabel("geschaalde scheepsweerstand $R_{total}$ (in $[kN]$)")
 plt.grid(True)
 plt.legend()

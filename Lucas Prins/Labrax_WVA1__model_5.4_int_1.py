@@ -24,6 +24,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.integrate import BDF, solve_ivp
 from scipy.interpolate import interp1d as ip
+from scipy.interpolate import interp1d
+import math
 
 #Initial experiment
 Total_time = 36000 #[s] Total simulation time
@@ -209,7 +211,8 @@ def calc_ShipResistance(v_s, Y_df_set):
     Re_schip = reynoldsgetalBerekening(v_s, L_schip, vis_schip)
     cf_schip = cfBerekening(Re_schip)
     c1 = cBerekening(Cw_schip, cf_schip, k, v_s)
-    R = (Y_df_set * c1 * (v_s ** 2))*1E3
+    R = 0.5*(Y_df_set * c1 * (v_s**2))*rho_schip*S_schip
+    R =11483.74143794+(2800.40244106*v_s)+(1702.4357436*(v_s**2))
     R_sp = R / (1 - thrust_factor)
     return [R, R_sp]
 
@@ -239,7 +242,7 @@ def ICE(P_ICE, n_eng):
     Q_f = Q_f_p + Q_loss_cooling
     eta_ICE = Q_f_p/Q_f
     m_f = Q_f / LHV #dFCdt    
-    eta_tot = eta_mech*eta_ICE*eta_comb*(W_e/Q_f)
+    eta_tot = eta_mech*eta_ICE*eta_comb*eta_td#(W_e/Q_f)
     return m_f, eta_ICE, eta_mech, eta_tot
     
 #Electric Motor
@@ -332,7 +335,7 @@ plt.figure(figsize=(9,6))
 plt.subplot(4, 1, 1)
 plt.xlim(0,Total_time)
 plt.ylim(0,15)
-plt.plot(sol.t, v_s, linewidth=width)
+plt.plot(sol.t, (v_s*3.6)/1.852, linewidth=width)
 plt.title('Ship Propulsion Output')
 plt.xlabel('Time [s]')
 plt.ylabel('Ship speed [m/s]')
@@ -364,3 +367,7 @@ plt.plot(P_B, eta_ICE_plot)
 plt.plot(P_B, eta_mech_plot)
 plt.plot(P_B, [eta_td]*len(P_B))
 plt.plot(P_B, [eta_comb]*len(P_B))
+plt.show()
+
+plt.plot((v_s*3.6)/1.852, R_sp)
+
